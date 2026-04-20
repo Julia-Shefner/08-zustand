@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "07-routing-nextjs",
+  title: "08-zustand-nextjs",
   description: "My Homework next.js",
 };
 
