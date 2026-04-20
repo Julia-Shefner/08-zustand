@@ -31,12 +31,13 @@ const NoteForm = () => {
     });
   };
 
-  const { mutate, isPending } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: createNote,
     onSuccess: () => {
       clearDraft();
       queryClient.invalidateQueries({ queryKey: ["notes"] });
       router.push("/notes/filter/all");
+      router.refresh();
     },
     onError: (error) => {
       console.log(error);
@@ -69,7 +70,7 @@ const NoteForm = () => {
     return newErrors;
   };
 
-  const formAction = (formData: FormData) => {
+  const formAction = async (formData: FormData) => {
     const values = {
       title: (formData.get("title") as string) || "",
       content: (formData.get("content") as string) || "",
@@ -81,7 +82,7 @@ const NoteForm = () => {
 
     if (Object.keys(validationErrors).length > 0) return;
 
-    mutate(values);
+    await mutateAsync(values);
   };
 
   return (
@@ -93,7 +94,7 @@ const NoteForm = () => {
           type="text"
           name="title"
           className={css.input}
-          defaultValue={draft?.title}
+          value={draft.title}
           onChange={handleChange}
         />
         {errors.title && <span className={css.error}>{errors.title}</span>}
@@ -106,7 +107,7 @@ const NoteForm = () => {
           name="content"
           rows={8}
           className={css.textarea}
-          defaultValue={draft?.content}
+          value={draft.content}
           onChange={handleChange}
         />
         {errors.content && <span className={css.error}>{errors.content}</span>}
@@ -117,7 +118,7 @@ const NoteForm = () => {
         <select
           id="tag"
           name="tag"
-          defaultValue="Todo"
+          value={draft.tag}
           onChange={handleChange}
           className={css.select}
         >
